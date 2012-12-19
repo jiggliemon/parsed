@@ -1,2 +1,2 @@
-## Parsed
-Parsed is a library that will talk to parse.com without any Backbone, jQuery, or underscore dependencies.
+# Parsed
+Parse.com library without the backbone, underscore or optional DOM libs
