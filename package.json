@@ -1,0 +1,21 @@
+{
+  "name": "parsed",
+  "version": "0.0.0",
+  "description": "Parse.com library",
+  "main": "src/main.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/jiggliemon/parsed.git"
+  },
+  "keywords": [
+    "parse.com"
+  ],
+  "author": "chase wilson",
+  "license": "MIT"
+}
