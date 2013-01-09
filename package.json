@@ -16,6 +16,9 @@
   "keywords": [
     "parse.com"
   ],
+  "dependencies":{
+    "yeah":"*"
+  },
   "author": "chase wilson",
   "license": "MIT"
 }
