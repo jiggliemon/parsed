@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node_modules/.bin/buster-test"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
     "yeah":"*"
   },
   "devDependencies":{
-    "buster":"*"
+    "mocha":"*"
   },
   "author": "chase wilson",
   "license": "MIT"
