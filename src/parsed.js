@@ -1,15 +1,10 @@
-var yeah = require('yeah')
+var EventBehavior = require('yeah')
 
-function Parse (config) {
-  this.config(config)
-
-  // extend the returned object with
-  // event handling methods
-  yeah(this)
-}
-
-var proto = {
-  config: function (key, value, undef) {
+var Parse = {
+   init: function (config) {
+    this.config(config || {})
+  }
+  ,config: function (key, value, undef) {
     var config = this.config = this.config || {}
 
     if (typeof key !== 'string') {
@@ -30,10 +25,6 @@ var proto = {
   }
 }
 
-Parse.prototype = proto
-
-Parse.create = function (appKey, jsKey) {
-  return new Parse(appKey, jsKey)
-}
+EventBehavior(Parse)
 
 module.exports = Parse
