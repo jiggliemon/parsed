@@ -75,35 +75,34 @@ describe('request', function () {
         }
       })
     })
+  })
 
-    describe('#get', function () {
-      it('should retrieve a previously saved object', function (done) {
-        request.get('classes','Thing/'+responses[0].objectId, null, function (err, data, res) {
-          if (err) {
-            throw new Error(err.message); 
-            return
-          }
+  describe('#get', function () {
+    it('should retrieve a previously saved object', function (done) {
+      request.get('classes','Thing/'+responses[0].objectId, null, function (err, data, res) {
+        if (err) {
+          throw new Error(err.message); 
+          return
+        }
 
+        done()
+      })
+    })
+  })
+
+  describe('#put', function () {
+    it('should update an existing object', function (done) {
+      request.put('classes','Thing/'+responses[0].objectId, {optional:"Heyo!"}, function (err, data, res) {
+        if (err) {
+          throw new Error(err.message); 
+          return
+        }
+
+        if (data.updatedAt) {
           done()
-        })
+        }
       })
     })
-
-    describe('#put', function () {
-      it('should update an existing object', function (done) {
-        request.put('classes','Thing/'+responses[0].objectId, {optional:"Heyo!"}, function (err, data, res) {
-          if (err) {
-            throw new Error(err.message); 
-            return
-          }
-
-          if (data.updatedAt) {
-            done()
-          }
-        })
-      })
-    })
-
   })
 
 })
