@@ -22,11 +22,6 @@ var legalRoutesObj = arrayToObject(legalRoutes)
 
 var apiHost = "api.parse.com"
 var apiVersion = 1
-
-// todo:This will need to be dynamic.
-//      I don't want to have this 
-//      the API dynamicizm effect
-      
 var apiPathPrefix = "/"+apiVersion
 
 function Request () {}
@@ -89,7 +84,7 @@ Request.send = function (route, object, method, params, callback) {
       if (callback && data.error) {
         callback(data)
       } else {
-        callback(null, data, res)
+        callback(null, Parsed.clean(data), res)
       }
     })
   })

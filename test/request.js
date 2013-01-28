@@ -49,10 +49,8 @@ describe('request', function () {
           throw new Error(err.message); return
         }
 
-        if (data.objectId) {
-          responses.push(data)
-          done()
-        }
+        responses.push(data)
+        done()
       })
     })
   })
@@ -68,11 +66,8 @@ describe('request', function () {
           throw new Error(err.message); 
           return
         }
-
-        if (data.objectId) {
-          responses.push(data)
-          done()
-        }
+        responses.push(data)
+        done()
       })
     })
   })
@@ -84,7 +79,6 @@ describe('request', function () {
           throw new Error(err.message); 
           return
         }
-
         done()
       })
     })
@@ -97,10 +91,7 @@ describe('request', function () {
           throw new Error(err.message); 
           return
         }
-
-        if (data.updatedAt) {
-          done()
-        }
+        done()
       })
     })
   })

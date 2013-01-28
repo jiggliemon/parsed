@@ -1,19 +1,27 @@
-var EventBehavior = require('yeah')
+var eventBehavior = require('yeah')
 
 var Parse = {
-   init: function (config) {
+  illegalProperties: ['updatedAt','createdAt']
+
+  /**
+   * @param {object} obj
+   *
+   */
+  ,init: function (config) {
     this.config(config || {})
   }
+  
   ,config: function (key, value, undef) {
-    var config = this.config = this.config || {}
+    var self = this
+    var config = self.config = self.config || {}
 
     if (typeof key !== 'string') {
       for(var k in key) {
         if (key.hasOwnProperty(k)) {
-          this.config(k,key[k])
+          self.config(k,key[k])
         }
       }
-      return this
+      return self
     }
 
     if (value === undef) {
@@ -21,10 +29,25 @@ var Parse = {
     }
 
     config[key] = value
-    return this
+    return self
+  }
+
+  /**
+   * @param {object} obj
+   *
+   */
+  ,clean: function (obj) {
+    var result = {}
+    for (var k in obj) {
+      if (obj.hasOwnProperty(k) 
+        && this.illegalProperties.indexOf(k) == -1) {
+        result[k] = obj[k]
+      }
+    }
+    return result
   }
 }
 
-EventBehavior(Parse)
+eventBehavior(Parse)
 
 module.exports = Parse
