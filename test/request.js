@@ -32,9 +32,10 @@ describe('request', function () {
     Im using it just to clean up the test env
   */
   after(function (done) {
-    request.send('schemas','Thing','DELETE', {}, function (err, res) {
+    request.delete('schemas','Thing', {}, function (err, res) {
       done()
-    }) 
+    })
+    console.log('All done')
   })
 
   describe('#send', function () {
