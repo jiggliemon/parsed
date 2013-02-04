@@ -2,26 +2,12 @@ var events = require('yeah/mixin')
 var request = require('./request')
 var parsed = require('./parsed')
 
-function extend (obj) {
-  var i = 1,k,arg
-  while (arguments[i]) {
-    arg = arguments[i]
-    for (k in arg) {
-      if (arg.hasOwnProperty(k)) {
-        obj[k] = arg[k]
-      }
-    }
-    i++
-  }
-  return obj
-}
-
 /**
  * Constructor 
  */
 function Obj (name, methods) {
   this.name = name
-  extend(this,methods)
+  parsed.extend(this, methods)
 }
 
 /**
@@ -37,21 +23,30 @@ Obj.create = function (/* String, Object */ name, /* Object */ methods) {
 /**
  * Prototype Methods 
  */
-extend(Obj.prototype, {
+parsed.extend(Obj.prototype, {
 
   /**
    *
    *
    */
-  ,init: function (dataOrId) {
+  init: function (dataOrId) {
     var self = this
     if (typeof dataOrId === 'string') {
-      seld.setId(dataOrId)
+      self.setId(dataOrId)
       
     }
+    return self
   }
 
   ,config: parsed.config
+  
+  /**
+   *
+   *
+   */
+  ,getDelta: function () {
+    return {}
+  }
   
   /**
    *
@@ -72,6 +67,7 @@ extend(Obj.prototype, {
         callback && callback.call(self, err, data)
       })  
     }
+    return self
   }
 
   /**
@@ -84,6 +80,7 @@ extend(Obj.prototype, {
       self.fireEvent('updated', err, data)
       callback && callback.call(self, err, data)
     })
+    return self
   }
 
   /**
@@ -96,6 +93,7 @@ extend(Obj.prototype, {
       self.fireEvent('saved', err, data)
       callback && callback.call(self, err, data)
     })
+    return self
   }
 }, events)
 

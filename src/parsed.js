@@ -9,6 +9,7 @@ var Parse = {
    */
   ,init: function (config) {
     this.config(config || {})
+    return this
   }
   
   ,config: function (key, value, undef) {
@@ -45,6 +46,20 @@ var Parse = {
       }
     }
     return result
+  }
+
+  ,extend: function (obj) {
+    var i = 1,k,arg
+    while (arguments[i]) {
+      arg = arguments[i]
+      for (k in arg) {
+        if (arg.hasOwnProperty(k)) {
+          obj[k] = arg[k]
+        }
+      }
+      i++
+    }
+    return obj
   }
 }
 

@@ -1,6 +1,6 @@
 var assert = require('assert')
+var test = require('../test')
 var request = require('../src/request')
-var Parse = require('../src/parsed')
 
 
 function extend (obj) {
@@ -17,16 +17,12 @@ function extend (obj) {
   return obj
 }
 
-Parse.init({
-   "Application ID": "qCJ9D21uYQCdYsCqdXCZsDbSaUDEjXiZzOFnpjt9"
-  ,"Javascript Key": "0Yzd9XKNmgnyGSG70kpIc6SP2T3OMziL9YUIHP2B"
-  ,"Master Key":"Vc88b1GvdGy5XhPnC7vBgsqdTSZGHWsAqXqDhnnj"
-})
-
-
 var responses = []
 
+
+
 describe('request', function () {
+
   /* 
     This /schemas endpoint is undocumented.
     Im using it just to clean up the test env

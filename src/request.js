@@ -78,7 +78,6 @@ Request.send = function (route, object, method, params, callback) {
       ,"Content-Length":payload.length
     }
   }, function (res) {
-    if (route === 'schemas') console.log(res)
     res.setEncoding('utf8')
     res.on('data', function (chunk) {
       var data = JSON.parse(chunk)
