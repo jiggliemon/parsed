@@ -52,12 +52,14 @@ var Parse = {
     var i = 1,k,arg
     while (arguments[i]) {
       arg = arguments[i]
-      for (k in arg) {
-        if (arg.hasOwnProperty(k)) {
-          obj[k] = arg[k]
+      if (arg) {
+        for (k in arg) {
+          if (arg.hasOwnProperty(k)) {
+            obj[k] = arg[k]
+          }
         }
+        i++
       }
-      i++
     }
     return obj
   }

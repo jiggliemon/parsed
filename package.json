@@ -19,9 +19,9 @@
   "dependencies":{
     "yeah":"*"
   },
-  "devDependencies":{
-    "mocha":"*"
-  },
+  // "devDependencies":{
+  //   "mocha":"*"
+  // },
   "author": "chase wilson",
   "license": "MIT"
 }
