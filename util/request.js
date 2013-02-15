@@ -1,5 +1,5 @@
 
-var Parsed = require('./parsed')
+var Parsed = require('../parsed')
 var https = require('https')
 
 function arrayToObject (array, val) {

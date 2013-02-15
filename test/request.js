@@ -1,6 +1,6 @@
 var assert = require('assert')
 var test = require('../test')
-var request = require('../src/request')
+var request = require('../util/request')
 
 
 function extend (obj) {

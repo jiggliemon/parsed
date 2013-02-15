@@ -1,4 +1,4 @@
-var parsed = require('./src/parsed')
+var parsed = require('./parsed')
 
 module.exports = parsed.init({
    "Application ID": "qCJ9D21uYQCdYsCqdXCZsDbSaUDEjXiZzOFnpjt9"

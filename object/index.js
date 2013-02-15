@@ -1,6 +1,6 @@
 var events = require('yeah/mixin')
-var request = require('./request')
-var parsed = require('./parsed')
+var request = require('../util/request')
+var parsed = require('../parsed')
 
 /**
  * Constructor 

@@ -1,6 +1,6 @@
 var assert = require('assert')
 var test = require('../test')
-var Obj = require('../src/object')
+var Obj = require('../object')
 
 describe('Object', function () {
   var Task = new Obj.create('Task', {
