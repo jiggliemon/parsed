@@ -31,7 +31,6 @@ describe('request', function () {
     request.delete('schemas','Thing', {}, function (err, res) {
       done()
     })
-    console.log('All done')
   })
 
   describe('#send', function () {
