@@ -1,7 +1,7 @@
 var events = require('yeah/mixin')
 var request = require('../util/request')
 var parsed = require('../parsed')
-
+var lambda = function () {console.log('lambda fired')}
 /**
  * Constructor 
  */
@@ -37,6 +37,7 @@ parsed.extend(Obj.prototype, {
    */
   init: function (dataOrId) {
     var self = this
+    self.isNew = false
     if (typeof dataOrId === 'string') {
       self.setId(dataOrId)
       var arg = arguments[arguments.length-1]
@@ -44,36 +45,40 @@ parsed.extend(Obj.prototype, {
       self.fetchData(dataOrId,cb)
     } else {
       self.setData(dataOrId)
+      self.isNew = true
     }
     return self
   }
 
   ,config: parsed.config
   
+  /**
+   *
+   * @param {string} id
+   */
   ,setId: function (id) {
-    if ( id ) {
-      this.id = id
-    }
+    this.id = id
     return this
   }
+
   /**
    *
    *
    */
-  ,getData: function () {
+  ,getData: function (key) {
     var self = this
       , data = self._data = self._data || {}
 
-    return data
+    return key? data[key] : data
   }
 
   /**
-   *
-   *
+   *  @param {object|string} data
+   *  @param val
    */
   ,setData: function (data, val, ignoreDelta) {
     var self = this, k
-      , _data = self._data = self._data || {}
+      , _data = self.getData()
       
     if ( typeof data == 'object' ) {
       for ( k in data ) {
@@ -82,9 +87,12 @@ parsed.extend(Obj.prototype, {
         }
       }
     } else {
-      _data[data] = val
-      if ( !ignoreDelta ) {
-        self.setDelta(data, _data[data])
+      if (_data[data] !== val ) {
+        _data[data] = val
+        self.fireEvent('data.set', data, val)
+        if ( !ignoreDelta ) {
+          self.setDelta(data, _data[data])
+        }
       }
     }
 
@@ -108,7 +116,7 @@ parsed.extend(Obj.prototype, {
    */
   ,setDelta: function (data, val) {
     var self = this, k
-      , delta = self._delta = self._delta || {}
+      , delta = self.getDelta()
       
     if ( typeof data == 'object' ) {
       for ( k in data ) {
@@ -135,16 +143,17 @@ parsed.extend(Obj.prototype, {
 
   /**
    *
-   *
+   * @param {object|string} def
+   * @param val
    */
   ,setDefaults: function (def,val) {
     var self = this, k
     if (!def) return self
 
-    self._defaults = self._defaults || {}
+    _defaults = self.getDefaults()
 
     if ( typeof def == 'string' ) {
-      self._defaults[def] = val
+      _defaults[def] = val
     } else {
       for ( k in def ) {
         if ( def.hasOwnProperty(k) ) {
@@ -158,7 +167,7 @@ parsed.extend(Obj.prototype, {
 
   /**
    *
-   *
+   * @param {string} id
    */
   ,fetchData: function (id) {
     var self = this
@@ -181,10 +190,11 @@ parsed.extend(Obj.prototype, {
 
   /**
    *
-   *
+   * @param {function} callback
    */
-  ,update: function (callback) {
+  ,_update: function (data, callback) {
     var self = this
+
     request.put('classes', self.name+'/'+self.id, self.getDelta(), function (err, data) {
       self.fireEvent('updated', err, data)
       callback && callback.call(self, err, data)
@@ -194,20 +204,32 @@ parsed.extend(Obj.prototype, {
 
   /**
    *
-   *
+   * @param {function} callback
    */
-  ,save: function (callback) {
+  ,save: function () {
     var self = this
+    var args = arguments
+    var callback = typeof args[args.length-1] == 'function' ? args[args.length-1] : lambda
+    
+    if (typeof args[0] == 'object') {
+      self.setData(args[0])
+    }
+    
     var data = parsed.extend({}, self.getDefaults(), self.getData())
+    
+    if (!self.isNew) {
+      return self._update(data, callback)
+    }
 
     request.post('classes', self.name, data, function(err, data) {
       self.fireEvent('saved', err, data)
       if ( err ) {
-        throw new Error
+        throw new Error(err)
       }
 
       if ( !self.id ) {
         self.id = data.objectId
+        self.isNew = false
       }
 
       callback && callback.call(self, err, data)
@@ -221,4 +243,4 @@ parsed.extend(Obj.prototype, {
 
 
 
-module.exports = Obj;
+module.exports = Obj
