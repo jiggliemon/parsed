@@ -1,33 +1,34 @@
-'use strict'
 
-// Check for window or global
-var win;
-if (typeof window != 'undefined') {
-    win = window
-} else {
-    win = global
-}
-
-var store = win.localStorage
+var store = require('localstorage')
 
 /**
  * LocalStorage plugin for parsed/object
  */
-function LS(){}
+function LS () {}
 
 LS.prototype = {
-    listeners: {
-        'saved': 'save'
-    }
+   listeners: {
+     'after.save': 'save'
+    ,'before.fetch': 'fetch'
+  }
 
-    , save: function(key, data){
-        store && store.setItem(key, JSON.stringify(data))
-        return this
-    }
+  /**
+   *
+   *
+   */
+  ,save: function (key, data) {
+    store.setItem(this.id, JSON.stringify(this.getData()))
+    console.log(store.getItem(this.id))
+  }
 
-    , fetch: function(key){
-        return store && JSON.parse(store.getItem(key))
-    }
+  /**
+   *
+   *
+   */
+  ,fetch: function(key) {
+    var persistedData = JSON.parse(store.getItem(this.id))
+    this.setData(persistedData, null, true)
+  }
 }
 
 module.exports = LS

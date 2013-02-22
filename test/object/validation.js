@@ -1,11 +1,20 @@
 var Obj = require('../../object')
-var LocalStorage = require('../../object/localstorage')
+var Validation = require('../../object/validation')
 var assert = require('assert')
 
 describe('Object::localstorage', function () {
   var Task = Obj.create('Task', {
-    implements: [LocalStorage]
+    implements: [Validation]
+    ,rules: {
+      "doneness": {
+         rule: function (val) {
+          return typeof val == 'boolean'
+        }
+        ,message: "Doneness must be either true or false"
+      }
+    }
   })
+
   var task = new Task({
     doneness: true
   })

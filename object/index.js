@@ -67,7 +67,14 @@ parsed.extend(Obj.prototype, {
     while (plugins.length) {
       var plugin = plugins.pop()
       if (typeof plugin == 'function') {
-        _plugins[plugin.name] = new plugin
+        var p = _plugins[plugin.name] = new plugin
+        if (p.listeners) {
+          for(var k in p.listeners) {
+            if (p.listeners.hasOwnProperty(k)) {
+              self.addEvent(k, p[p.listeners[k]])
+            }
+          }
+        }
       }
     }
   }
@@ -76,8 +83,10 @@ parsed.extend(Obj.prototype, {
    * @param {string} id
    */
   ,setId: function (id) {
-    this.id = id
-    return this
+    var self = this
+    self.id = id
+    self.setData('id', self.id)
+    return self
   }
 
   /**
@@ -199,9 +208,9 @@ parsed.extend(Obj.prototype, {
     // we'll use that as a callback
     var cb = arguments[arguments.length -1]
     var callback = typeof(cb) == 'function'? cb : null
-    self.fireEvent('before.fetch', objId)
-
-    if (id) {
+    
+    self.fireEvent('before.fetch')
+    if (objId) {
       request.get('classes', self.name, id, function (err, data) {
         self.fireEvent('fetched', err, data)
         self.setData(data, null, true)
@@ -243,7 +252,7 @@ parsed.extend(Obj.prototype, {
     if (!self.isNew) {
       return self._update(data, callback)
     }
-    
+
     self.fireEvent('before.save')
     request.post('classes', self.name, data, function(err, data) {
       self.fireEvent('saved', err, data)
@@ -251,12 +260,13 @@ parsed.extend(Obj.prototype, {
         throw new Error(err)
       }
 
-      if ( !self.id ) {
-        self.id = data.objectId
+      if ( !self.id && data.objectId) {
+        self.setId(data.objectId)
         self.isNew = false
       }
 
       callback && callback.call(self, err, data)
+      self.fireEvent('after.save')
     })
 
     return self
