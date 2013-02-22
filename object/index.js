@@ -19,6 +19,7 @@ function Obj (name, options, methods) {
 Obj.create = function ( name, options, methods) {
   var ParsedObject = function () {
     parsed.extend(this, methods)
+    this.setPlugins(options.implements)
     this.init.apply(this, arguments)
   }
   ParsedObject.prototype = new Obj( name, options )
@@ -52,6 +53,24 @@ parsed.extend(Obj.prototype, {
 
   ,config: parsed.config
   
+  ,getPlugins: function() {
+    var self = this
+    self._plugins = self._plugins || {}
+    return self._plugins
+  }
+
+  ,setPlugins: function (plugins) {
+    var self = this
+      , plugins = Array.isArray(plugins)?plugins:Array.prototype.slice.call(arguments, 0)
+      , _plugins = self.getPlugins()
+
+    while (plugins.length) {
+      var plugin = plugins.pop()
+      if (typeof plugin == 'function') {
+        _plugins[plugin.name] = new plugin
+      }
+    }
+  }
   /**
    *
    * @param {string} id
@@ -125,7 +144,10 @@ parsed.extend(Obj.prototype, {
         }
       }
     } else {
-      delta[data] = val
+      try {
+        self.fireEvent('before.set', data, val)
+        delta[data] = val
+      } catch (e) { }
     }
 
     return self

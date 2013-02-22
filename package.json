@@ -17,11 +17,12 @@
     "parse.com"
   ],
   "dependencies":{
-    "yeah":"*"
+    "yeah":"*",
+    "localStorage":"*"
   },
-  // "devDependencies":{
-  //   "mocha":"*"
-  // },
+  "devDependencies":{
+    
+  },
   "author": "chase wilson",
   "license": "MIT"
 }
