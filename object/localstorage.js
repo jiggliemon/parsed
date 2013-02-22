@@ -8,7 +8,7 @@ if (typeof window != 'undefined') {
     win = global
 }
 
-var store = win.localStorage;
+var store = win.localStorage
 
 /**
  * LocalStorage plugin for parsed/object
@@ -21,12 +21,12 @@ LS.prototype = {
     }
 
     , save: function(key, data){
-        store && store.setItem(key, JSON.stringify(data));
-        return this;
+        store && store.setItem(key, JSON.stringify(data))
+        return this
     }
 
     , fetch: function(key){
-        return store && JSON.parse(store.getItem(key));
+        return store && JSON.parse(store.getItem(key))
     }
 }
 
