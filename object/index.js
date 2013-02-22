@@ -199,10 +199,11 @@ parsed.extend(Obj.prototype, {
     // we'll use that as a callback
     var cb = arguments[arguments.length -1]
     var callback = typeof(cb) == 'function'? cb : null
+    self.fireEvent('before.fetch', objId)
 
     if (id) {
       request.get('classes', self.name, id, function (err, data) {
-        self.fireEvent('fetched data', err, data)
+        self.fireEvent('fetched', err, data)
         self.setData(data, null, true)
         callback && callback.call(self, err, data)
       })  
@@ -216,7 +217,7 @@ parsed.extend(Obj.prototype, {
    */
   ,_update: function (data, callback) {
     var self = this
-
+    self.fireEvent('before.update')
     request.put('classes', self.name+'/'+self.id, self.getDelta(), function (err, data) {
       self.fireEvent('updated', err, data)
       callback && callback.call(self, err, data)
@@ -242,7 +243,8 @@ parsed.extend(Obj.prototype, {
     if (!self.isNew) {
       return self._update(data, callback)
     }
-
+    
+    self.fireEvent('before.save')
     request.post('classes', self.name, data, function(err, data) {
       self.fireEvent('saved', err, data)
       if ( err ) {
