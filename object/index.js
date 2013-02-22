@@ -102,7 +102,7 @@ parsed.extend(Obj.prototype, {
     if ( typeof data == 'object' ) {
       for ( k in data ) {
         if ( data.hasOwnProperty(k) ) {
-          self.setData(k, data[k])
+          self.setData(k, data[k], ignoreDelta)
         }
       }
     } else {
