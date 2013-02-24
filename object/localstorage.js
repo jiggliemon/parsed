@@ -18,7 +18,6 @@ LS.prototype = {
    */
   ,save: function (key, data) {
     store.setItem(this.id, JSON.stringify(this.getData()))
-    console.log(store.getItem(this.id))
   }
 
   /**
