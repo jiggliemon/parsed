@@ -18,7 +18,8 @@
   ],
   "dependencies":{
     "yeah":"*",
-    "localStorage":"*"
+    "localStorage":"*",
+    "xmlhttprequest":"*"
   },
   "devDependencies":{
     

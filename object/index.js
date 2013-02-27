@@ -19,7 +19,7 @@ function Obj (name, options, methods) {
 Obj.create = function ( name, options, methods) {
   var ParsedObject = function () {
     parsed.extend(this, methods)
-    this.setPlugins(options.implements)
+    this.setPlugins(options.plugins)
     this.init.apply(this, arguments)
   }
   ParsedObject.prototype = new Obj( name, options )

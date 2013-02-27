@@ -1,13 +1,13 @@
 
 var Parsed = require('../parsed')
-var https = require('https')
+var XHR = require('./xhr')
 
 function arrayToObject (array, val) {
   var result = {}, i=0
   while (i < array.length) {
-      result[array[i]] = true;
-      i++
-    }
+    result[array[i]] = true
+    i++
+  }
   return result
 }
 
@@ -39,6 +39,8 @@ Request.send = function (route, object, method, params, callback) {
   route = route.toLowerCase() //
   object = object || '' //
   params = params || {} //
+  callback = callback || function() {}
+  var xhr = XHR()
 
   if (!legalMethodsObj[method]) { //
     throw new Error('parsed cannot make a request using the `'+method+'` method.'); //
@@ -65,35 +67,33 @@ Request.send = function (route, object, method, params, callback) {
   // this is to allow for /schema to be called
   // possibly others down the line, maybe /users?
   var path = [apiPathPrefix,route]
-  if ( object ) {
-    path.push(object)
-  }
+  if ( object ) { path.push(object) }
 
-  var req = https.request({
-     method: 'POST'
-    ,hostname: apiHost
-    ,path: path.join('/')
-    ,headers: {
-       "Content-Type":"text/plain"
-      ,"Content-Length":payload.length
-    }
-  }, function (res) {
-    res.setEncoding('utf8')
-    res.on('data', function (chunk) {
-      var data = JSON.parse(chunk)
-      if (callback && data.error) {
-        callback(data)
+  xhr.onreadystatechange = function(response) {
+    var status = xhr.status
+    if (xhr.readyState == 4) {
+      if (handled) { return }
+      handled = true
+      if ( status >= 200 && status < 300 ) {
+        try {
+          response = JSON.parse(xhr.responseText)
+        } catch (e) { callback && callback(e, xhr) }
+
+        if (response) {
+          callback && callback(null, response, xhr)
+        }
       } else {
-        callback(null, Parsed.clean(data), res)
+        console.log('blurg.  handle the error here.')
       }
-    })
-  })
+    }
+  }
+  var url = apiHost + path.join('/')
+  console.log(url)
+  xhr.open('POST',url, true)
+  xhr.setRequestHeader("Content-Type", "text/plain") // avoid pre-flight.
+  xhr.send(payload)
 
-  req.on('error', callback)
-  req.write(payload)
-  req.end()
-
-  return req
+  return xhr
 }
 
 // This will create our .post,.get,.put,.delete methods
@@ -120,3 +120,85 @@ function extend (obj) {
 
 
 module.exports = Request
+
+
+
+/*
+Parse._ajaxIE8 = function(method, url, data, success, error) {
+    var promise = new Parse.Promise();
+    var xdr = new XDomainRequest();
+    xdr.onload = function() {
+      var response;
+      try {
+        response = JSON.parse(xdr.responseText);
+      } catch (e) {
+        if (error) {
+          error(xdr);
+        }
+        promise.reject(e);
+      }
+      if (response) {
+        if (success) {
+          success(response, xdr);
+        }
+        promise.resolve(response);
+      }
+    };
+    xdr.onerror = xdr.ontimeout = function() {
+      if (error) {
+        error(xdr);
+      }
+      promise.reject(xdr);
+    };
+    xdr.onprogress = function() {};
+    xdr.open(method, url);
+    xdr.send(data);
+    return promise;
+  };
+
+  Parse._ajax = function(method, url, data, success, error) {
+    if (typeof(XDomainRequest) !== "undefined") {
+      return Parse._ajaxIE8(method, url, data, success, error);
+    }
+
+    var promise = new Parse.Promise();
+    var handled = false;
+
+    var xhr = new Parse.XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        if (handled) {
+          return;
+        }
+        handled = true;
+
+        if (xhr.status >= 200 && xhr.status < 300) {
+          var response;
+          try {
+            response = JSON.parse(xhr.responseText);
+          } catch (e) {
+            if (error) {
+              error(xhr);
+            }
+            promise.reject(e);
+          }
+          if (response) {
+            if (success) {
+              success(response, xhr.status, xhr);
+            }
+            promise.resolve(response, xhr.status, xhr);
+          }
+        } else {
+          if (error) {
+            error(xhr);
+          }
+          promise.reject(xhr);
+        }
+      }
+    };
+    xhr.open(method, url, true);
+    xhr.setRequestHeader("Content-Type", "text/plain");  // avoid pre-flight.
+    xhr.send(data);
+    return promise;
+  };
+  */
